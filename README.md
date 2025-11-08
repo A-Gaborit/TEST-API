@@ -65,12 +65,18 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 4️⃣ Lancer les migrations et seeders
+### 4️⃣ Générer le secret JWT
+```bash
+php artisan jwt:secret
+```
+Permet de générer un secret aléatoire pour l'authentification JWT.
+
+### 5️⃣ Lancer les migrations et seeders
 ```bash
 php artisan migrate --seed
 ```
 
-### 5️⃣ Lancer le serveur
+### 6️⃣ Lancer le serveur
 ```bash
 php artisan serve
 ```
@@ -85,13 +91,15 @@ php artisan serve
 Lootopia-API/
 ├── app/
 │   ├── Http/Controllers/       # Contrôleurs API
+│   ├── Http/Requests/          # Validations données entrantes
 │   ├── Models/                 # Modèles Eloquent
 │   └── Http/Middleware/        # Middleware (JWT, auth, etc.)
 ├── database/
+│   ├── factories/              # Fabrications données
 │   ├── migrations/             # Structure BDD
 │   └── seeders/                # Données initiales
 ├── routes/
-│   └── api.php                 # Routes API REST
+│   └── api.php                 # Routes API
 └── tests/                      # Tests unitaires et fonctionnels
 ```
 
