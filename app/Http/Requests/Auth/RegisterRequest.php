@@ -22,7 +22,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {  
         return [
-            'name' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'pseudo' => 'required|string|max:255|unique:users,pseudo',
             'email' => 'required|string|email:rfc|unique:users,email',
             'password' => [
                 'required',
@@ -49,21 +51,21 @@ class RegisterRequest extends FormRequest
                     }
                 },
             ],
-            'role_id' => 'required|integer|exists:roles,id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Le nom est obligatoire',
+            'firstname.required' => 'Le prénom est obligatoire',
+            'lastname.required' => 'Le nom de famille est obligatoire',
+            'pseudo.required' => 'Le pseudo est obligatoire',
+            'pseudo.unique' => 'Le pseudo est déjà utilisé',
             'email.required' => 'L\'email est obligatoire',
             'email.email' => 'L\'email doit être une adresse email valide',
             'email.unique' => 'L\'email est déjà utilisé',
             'password.required' => 'Le mot de passe est obligatoire',
             'password.min' => 'Le mot de passe doit contenir au moins 12 caractères',
-            'role_id.required' => 'Le rôle est obligatoire',
-            'role_id.exists' => 'Le rôle n\'existe pas',
         ];
     }
 }

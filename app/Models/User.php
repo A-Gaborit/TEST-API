@@ -19,10 +19,12 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
+        'pseudo',
+        'avatar_path',
         'email',
-        'password',
-        'role_id',
+        'password'
     ];
 
     /**
@@ -35,8 +37,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'updated_at',
         'created_at',
-        'role_id',
         'email_verified_at',
+    ];
+
+    protected $with = [
+        'partner'
     ];
 
     /**
@@ -52,6 +57,17 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function toArray()
+    {
+        $array = parent::toArray();
+        
+        if (empty($this->partner) || $this->partner->isEmpty()) {
+            unset($array['partner']);
+        }
+        
+        return $array;
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -60,12 +76,18 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'role_name' => $this->role?->name,
+            'role' => $this->role(),
         ];
     }
 
+    public function partner()
+    {
+        return $this->belongsToMany(Partner::class, 'member_partners');
+    }
+
+
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->partner->isNotEmpty() ? 'partner' : 'player';
     }
 }

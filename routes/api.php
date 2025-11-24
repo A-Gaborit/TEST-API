@@ -14,11 +14,16 @@ Route::middleware('auth:api')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 
     // Routes for only partners
-    Route::middleware('role:partner')->group(function () {
-        
+    Route::middleware('role:partner')->prefix('partner')->group(function () {
+        Route::get('hello', function () {
+            return response()->json(['message' => 'Hello from partner route']);
+        });
     });
 
     // Routes for only players
-    Route::middleware('role:player')->group(function () {
+    Route::middleware('role:player')->prefix('player')->group(function () {
+        Route::get('hello', function () {
+            return response()->json(['message' => 'Hello from player route']);
+        });
     });
 });

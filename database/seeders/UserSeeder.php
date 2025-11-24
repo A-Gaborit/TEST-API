@@ -14,15 +14,17 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->create([
-            'name' => 'Test Player',
-            'email' => 'player@test.fr',
-            'role_id' => 1,
+            'firstname' => 'Test',
+            'lastname' => 'Player',
+            'pseudo' => 'testplayer',
+            'email' => 'player@test.fr'
         ]);
         
         $user = User::factory()->create([
-            'name' => 'Test Partner',
-            'email' => 'partner@test.fr',
-            'role_id' => 2,
+            'firstname' => 'Test',
+            'lastname' => 'Partner',
+            'pseudo' => 'testpartner',
+            'email' => 'partner@test.fr'
         ]);
     }
 }

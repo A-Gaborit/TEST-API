@@ -5,23 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\StorePartnerRequest;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use App\Models\Partner;
+use App\Models\MemberPartner;
 
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'role_id' => $request->role_id,
-        ]);
-
+        $user = User::create($request->all());
         $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user', 'token'), 201);

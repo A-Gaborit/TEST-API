@@ -29,7 +29,7 @@ L’API a pour but de fournir les services nécessaires au MVP de Lootopia :
 | Framework | Laravel 12 |
 | Langage | PHP 8.4 |
 | Base de données | MySQL 8.4 |
-| Authentification | JWT|
+| Authentification | JWT, bcrypt|
 | Documentation API | Swagger |
 | Tests | PestPHP |
 | Sécurité | Bcrypt, validations, CORS |
