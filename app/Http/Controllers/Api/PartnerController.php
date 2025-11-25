@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\UpdatePartnerRequest;
 use App\Models\Partner;
+use App\Models\MemberPartner;
 
 class PartnerController extends Controller
 {
@@ -24,7 +25,23 @@ class PartnerController extends Controller
     public function store(StorePartnerRequest $request)
     {
         $partner = Partner::create($request->all());
+
+        MemberPartner::create([
+            'partner_id' => $partner->id, 
+            'user_id' => auth()->user()->id,
+            'role' => 'owner',
+        ]);
+
         return $partner;
+    }
+
+    public function assignUserToPartner($partnerId)
+    {
+        MemberPartner::create([
+            'partner_id' => $partnerId,
+            'user_id' => auth()->user()->id,
+        ]);
+        return response()->json(['message' => 'Vous avez été ajouté au partenaire avec succès']);
     }
 
     /**
