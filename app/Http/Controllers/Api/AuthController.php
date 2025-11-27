@@ -2,57 +2,56 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\StorePartnerRequest;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Models\Partner;
-use App\Models\MemberPartner;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create($request->all());
-        $token = JWTAuth::fromUser($user);
+        $token = auth()->fromUser($user);
 
-        return response()->json(compact('user', 'token'), 201);
+        return response()->json([
+            'user' => new UserResource($user),
+            'token' => $token,
+        ]);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
 
-        try {
-            if (!$token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Identifiants invalides'], 401);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Impossible de créer le token'], 500);
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json([
+                'message' => 'Identifiants invalides'
+            ], 401);
         }
 
-        return response()->json(compact('token'));
+        return response()->json([
+            'token' => $token,
+        ]);
     }
 
-    public function me()
+    public function me(): JsonResponse
     {
-        return response()->json(auth()->user());
+        return response()->json(new UserResource(auth()->user()));
     }
 
-    public function logout()
+    public function logout() : JsonResponse
     {
         auth()->logout();
-        return response()->json(['message' => 'Déconnexion réussie']);
+        return response()->json([
+            'message' => 'Déconnexion réussie',
+        ]);
     }
 
-    public function refresh()
+    public function refresh(): JsonResponse
     {
         return response()->json([
             'token' => auth()->refresh(),

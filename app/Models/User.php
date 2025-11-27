@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -34,60 +34,48 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
-        'remember_token',
-        'updated_at',
-        'created_at',
-        'email_verified_at',
-    ];
-
-    protected $with = [
-        'partner'
+        'remember_token'
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var list<string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed'
+    ];
 
-    public function toArray()
-    {
-        $array = parent::toArray();
-        
-        if (empty($this->partner) || $this->partner->isEmpty()) {
-            unset($array['partner']);
-        }
-        
-        return $array;
-    }
-
-    public function getJWTIdentifier()
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims()
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array<string, string>
+     */
+    public function getJWTCustomClaims(): array
     {
         return [
-            'role' => $this->role(),
+            'role' => $this->partner->isNotEmpty() ? 'partner' : 'player',
         ];
     }
 
-    public function partner()
+    /**
+     * Get the partner associated with the user.
+     *
+     * @return BelongsToMany<Partner>
+     */
+    public function partner(): BelongsToMany
     {
         return $this->belongsToMany(Partner::class, 'member_partners');
-    }
-
-
-    public function role()
-    {
-        return $this->partner->isNotEmpty() ? 'partner' : 'player';
     }
 }
