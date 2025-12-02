@@ -27,7 +27,7 @@ class PartnerController extends Controller
         $partner = Partner::create($request->all());
 
         MemberPartner::create([
-            'partner_id' => $partner->id, 
+            'partner_id' => $partner->id,
             'user_id' => auth()->user()->id,
             'role' => 'owner',
         ]);
@@ -37,6 +37,8 @@ class PartnerController extends Controller
 
     public function assignUserToPartner($partnerId)
     {
+        Partner::findOrFail($partnerId);
+
         MemberPartner::create([
             'partner_id' => $partnerId,
             'user_id' => auth()->user()->id,

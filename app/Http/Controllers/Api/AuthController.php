@@ -2,35 +2,48 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Contracts\Services\AuthServiceInterface;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
+    /**
+     * @param AuthServiceInterface $authService
+     */
+    public function __construct(
+        protected AuthServiceInterface $authService
+    ) {}
+
+    /**
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create($request->all());
-        $token = auth()->fromUser($user);
+        $result = $this->authService->register($request->validated());
 
         return response()->json([
-            'user' => new UserResource($user),
-            'token' => $token,
-        ]);
+            'data' => new UserResource($result['user']),
+            'token' => $result['token'],
+        ], Response::HTTP_CREATED);
     }
 
+    /**
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
+        $token = $this->authService->login($request->only('email', 'password'));
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json([
-                'message' => 'Identifiants invalides'
-            ], 401);
+        if (!$token) {
+            throw new AuthenticationException('Identifiants invalides');
         }
 
         return response()->json([
@@ -38,23 +51,37 @@ class AuthController extends Controller
         ]);
     }
 
-    public function me(): JsonResponse
+    /**
+     * @return UserResource
+     */
+    public function me(): UserResource
     {
-        return response()->json(new UserResource(auth()->user()));
+        $user = $this->authService->getCurrentUser();
+
+        return new UserResource($user);
     }
 
-    public function logout() : JsonResponse
+    /**
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
     {
-        auth()->logout();
+        $this->authService->logout();
+
         return response()->json([
             'message' => 'Déconnexion réussie',
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function refresh(): JsonResponse
     {
+        $token = $this->authService->refresh();
+
         return response()->json([
-            'token' => auth()->refresh(),
+            'token' => $token,
         ]);
     }
 }
