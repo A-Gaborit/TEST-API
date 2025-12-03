@@ -2,23 +2,23 @@
 
 namespace App\Repositories;
 
-use App\Contracts\Repositories\UserRepositoryInterface;
-use App\Models\User;
+use App\Contracts\Repositories\PartnerRepositoryInterface;
+use App\Models\Partner;
 use Illuminate\Support\Facades\Hash;
 
-class UserRepository implements UserRepositoryInterface
+class PartnerRepository implements PartnerRepositoryInterface
 {
     /**
-     * @param User $model
+     * @param Partner $model
      */
     public function __construct(
-        protected User $model
+        protected Partner $model
     ) {}
 
     /**
      * {@inheritDoc}
      */
-    public function create(array $data): User
+    public function create(array $data): Partner
     {
         return $this->model->create($data);
     }
@@ -26,7 +26,7 @@ class UserRepository implements UserRepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findById(int $id): ?User
+    public function findById(int $id): ?Partner
     {
         return $this->model->findOrFail($id);
     }
@@ -36,9 +36,9 @@ class UserRepository implements UserRepositoryInterface
      */
     public function update(int $id, array $data): bool
     {
-        $user = $this->findById($id);
+        $partner = $this->findById($id);
 
-        return $user->update($data);
+        return $partner->update($data);
     }
 
     /**
@@ -46,8 +46,8 @@ class UserRepository implements UserRepositoryInterface
      */
     public function delete(int $id): bool
     {
-        $user = $this->findById($id);
+        $partner = $this->findById($id);
 
-        return $user->delete();
+        return $partner->delete();
     }
 }

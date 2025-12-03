@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\UpdatePartnerRequest;
 use App\Models\Partner;
 use App\Models\MemberPartner;
+use App\Contracts\Services\PartnerServiceInterface;
 
 class PartnerController extends Controller
 {
+
+    /**
+     * @param PartnerServiceInterface $partnerService
+     */
+    public function __construct(
+        protected PartnerServiceInterface $partnerService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -24,26 +34,14 @@ class PartnerController extends Controller
      */
     public function store(StorePartnerRequest $request)
     {
-        $partner = Partner::create($request->all());
-
-        MemberPartner::create([
-            'partner_id' => $partner->id,
-            'user_id' => auth()->user()->id,
-            'role' => 'owner',
-        ]);
-
-        return $partner;
+        $partner = $this->partnerService->create($request->validated());
+        return response()->json($partner, Response::HTTP_CREATED);
     }
 
-    public function assignUserToPartner($partnerId)
+    public function assignUserToPartner(string $partnerId)
     {
-        Partner::findOrFail($partnerId);
-
-        MemberPartner::create([
-            'partner_id' => $partnerId,
-            'user_id' => auth()->user()->id,
-        ]);
-        return response()->json(['message' => 'Vous avez été ajouté au partenaire avec succès']);
+        $response = $this->partnerService->assignUserToPartner($partnerId);
+        return response()->json($response);
     }
 
     /**

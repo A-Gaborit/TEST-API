@@ -90,16 +90,21 @@ php artisan serve
 ```
 Lootopia-API/
 ├── app/
-│   ├── Http/Controllers/       # Contrôleurs API
+│   ├── Contracts/              # Définis les interfaces
+│   ├── Exceptions/             # Gère les erreurs personnalisées
+│   ├── Http/Controllers/       # Traite les requêtes HTTP + renvoie les réponses
+│   ├── Http/Middleware/        # Filtre et protège les requêtes (JWT, auth, etc.)
 │   ├── Http/Requests/          # Validations données entrantes
-│   ├── Models/                 # Modèles Eloquent
-│   └── Http/Middleware/        # Middleware (JWT, auth, etc.)
+│   ├── Http/Resources/         # Formatte les données sortantes
+│   ├── Models/                 # Représente les données
+│   ├── Repositories/           # Gère les interactions avec la BDD
+│   └── Services/               # Contient la logique métier
 ├── database/
 │   ├── factories/              # Fabrications données
 │   ├── migrations/             # Structure BDD
 │   └── seeders/                # Données initiales
 ├── routes/
-│   └── api.php                 # Routes API
+│   └── api.php                 # Définit les endpoints
 └── tests/                      # Tests unitaires et fonctionnels
 ```
 
