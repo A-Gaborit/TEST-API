@@ -2,15 +2,15 @@
 
 namespace App\Contracts\Repositories;
 
-use App\Models\Partner;
+use App\Entities\Partner;
 
 interface PartnerRepositoryInterface
 {
     /**
-     * @param int $id
-     * @return Partner|null
+     * @param string $id
+     * @return Partner
      */
-    public function findById(int $id): ?Partner;
+    public function findById(string $id): Partner;
 
 
     /**
@@ -20,15 +20,15 @@ interface PartnerRepositoryInterface
     public function create(array $data): Partner;
 
     /**
-     * @param int $id
+     * @param string $id
      * @param array $data
      * @return bool
      */
-    public function update(int $id, array $data): bool;
+    public function update(string $id, array $data): bool;
 
     /**
-     * @param int $id
+     * @param string $id
      * @return bool
      */
-    public function delete(int $id): bool;
+    public function delete(string $id): bool;
 }

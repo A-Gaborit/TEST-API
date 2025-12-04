@@ -3,51 +3,67 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\PartnerRepositoryInterface;
-use App\Models\Partner;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Partner as PartnerModel;
+use App\Entities\Partner as PartnerEntity;
 
 class PartnerRepository implements PartnerRepositoryInterface
 {
     /**
-     * @param Partner $model
+     * @param PartnerModel $model
      */
     public function __construct(
-        protected Partner $model
+        protected PartnerModel $model
     ) {}
 
     /**
      * {@inheritDoc}
      */
-    public function create(array $data): Partner
+    public function create(array $data): PartnerEntity
     {
-        return $this->model->create($data);
+        $partnerModel = $this->model->create($data);
+
+        return $this->mapModelToEntity($partnerModel);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function findById(int $id): ?Partner
+    public function findById(string $id): PartnerEntity
     {
-        return $this->model->findOrFail($id);
+        $partnerModel = $this->model->findOrFail($id); 
+
+        return $this->mapModelToEntity($partnerModel);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function update(int $id, array $data): bool
+    public function update(string $id, array $data): bool
     {
-        $partner = $this->findById($id);
+        $partnerModel = $this->model->findOrFail($id);
 
-        return $partner->update($data);
+        return $partnerModel->update($data);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
-        $partner = $this->findById($id);
+        $partnerModel = $this->model->findOrFail($id);
 
-        return $partner->delete();
+        return $partnerModel->delete();
+    }
+
+    protected function mapModelToEntity(PartnerModel $model): PartnerEntity
+    {
+        return new PartnerEntity(
+            id: (string) $model->id,
+            companyName: $model->company_name,
+            contactEmail: $model->contact_email,
+            contactPhone: $model->contact_phone,
+            website: $model->website,
+            logoPath: $model->logo_path,
+        );
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
@@ -17,7 +16,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $userRole = $user->partner->isNotEmpty() ? 'partner' : 'player';
 
         if (!in_array((string) $userRole, $roles, true)) {

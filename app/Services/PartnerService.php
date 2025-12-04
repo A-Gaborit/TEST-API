@@ -5,7 +5,8 @@ namespace App\Services;
 use App\Contracts\Repositories\PartnerRepositoryInterface;
 use App\Contracts\Services\PartnerServiceInterface;
 use App\Models\MemberPartner;
-use Illuminate\Support\Facades\Auth;
+use App\Entities\Partner;
+use Illuminate\Support\Facades\DB;
 
 class PartnerService implements PartnerServiceInterface
 {
@@ -19,17 +20,19 @@ class PartnerService implements PartnerServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function create(array $data)
+    public function create(array $data): Partner
     {
-        $partner = $this->partnerRepository->create($data);
+        return DB::transaction(function () use ($data) {
+            $partner = $this->partnerRepository->create($data);
 
-        MemberPartner::create([
-            'partner_id' => $partner->id,
-            'user_id' => auth()->user()->id,
-            'role' => 'owner',
-        ]);
+            MemberPartner::create([
+                'partner_id' => $partner->getId(),
+                'user_id' => auth()->id(),
+                'role' => 'owner',
+            ]);
 
-        return $partner;
+            return $partner;
+        });
     }
 
     /**
@@ -40,7 +43,7 @@ class PartnerService implements PartnerServiceInterface
         $partner = $this->partnerRepository->findById($partnerId);
 
         MemberPartner::create([
-            'partner_id' => $partner->id,
+            'partner_id' => $partner->getId(),
             'user_id' => auth()->user()->id,
         ]);
 

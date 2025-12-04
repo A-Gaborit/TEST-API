@@ -2,16 +2,15 @@
 
 namespace App\Contracts\Services;
 
-use App\Models\Partner;
-use App\Http\Requests\StorePartnerRequest;
+use App\Entities\Partner;
 
 interface PartnerServiceInterface
 {
     /**
      * @param array $data
-     * @return \App\Models\Partner
+     * @return Partner
      */
-    public function create(array $data);
+    public function create(array $data): Partner;
 
     /**
      * @param string $partnerId

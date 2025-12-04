@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Contracts\Services\AuthServiceInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class AuthService implements AuthServiceInterface
 {

@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\UpdatePartnerRequest;
-use App\Models\Partner;
-use App\Models\MemberPartner;
 use App\Contracts\Services\PartnerServiceInterface;
+use App\Http\Resources\PartnerResource;
 
 class PartnerController extends Controller
 {
@@ -32,13 +30,13 @@ class PartnerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePartnerRequest $request)
+    public function store(StorePartnerRequest $request): PartnerResource
     {
         $partner = $this->partnerService->create($request->validated());
-        return response()->json($partner, Response::HTTP_CREATED);
+        return new PartnerResource($partner);
     }
 
-    public function assignUserToPartner(string $partnerId)
+    public function assignUserToPartner(string $partnerId): JsonResponse
     {
         $response = $this->partnerService->assignUserToPartner($partnerId);
         return response()->json($response);
