@@ -107,21 +107,35 @@ class Partner
         $this->contactPhone = $contactPhone;
     }
 
+    /**
+     * @return string|null
+     */
     public function getWebsite(): ?string
     {
         return $this->website;
     }
 
+    /**
+     * @param string|null $website
+     * @return void
+     */
     public function setWebsite(?string $website): void
     {
         $this->website = $website;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLogoPath(): ?string
     {
         return $this->logoPath;
     }
 
+    /**
+     * @param string|null $logoPath
+     * @return void
+     */
     public function setLogoPath(?string $logoPath): void
     {
         $this->logoPath = $logoPath;

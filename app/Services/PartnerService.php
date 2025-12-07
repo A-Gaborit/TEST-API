@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\Repositories\MemberPartnerRepositoryInterface;
 use App\Contracts\Repositories\PartnerRepositoryInterface;
 use App\Contracts\Services\PartnerServiceInterface;
 use App\Models\MemberPartner;
@@ -12,9 +13,11 @@ class PartnerService implements PartnerServiceInterface
 {
     /**
      * @param PartnerRepositoryInterface $partnerRepository
+     * @param MemberPartnerRepositoryInterface $memberPartnerRepository
      */
     public function __construct(
-        protected PartnerRepositoryInterface $partnerRepository
+        protected PartnerRepositoryInterface $partnerRepository,
+        protected MemberPartnerRepositoryInterface $memberPartnerRepository
     ) {}
 
     /**
@@ -25,7 +28,7 @@ class PartnerService implements PartnerServiceInterface
         return DB::transaction(function () use ($data) {
             $partner = $this->partnerRepository->create($data);
 
-            MemberPartner::create([
+            $this->memberPartnerRepository->create([
                 'partner_id' => $partner->getId(),
                 'user_id' => auth()->id(),
                 'role' => 'owner',
@@ -42,9 +45,9 @@ class PartnerService implements PartnerServiceInterface
     {
         $partner = $this->partnerRepository->findById($partnerId);
 
-        MemberPartner::create([
+        $this->memberPartnerRepository->create([
             'partner_id' => $partner->getId(),
-            'user_id' => auth()->user()->id,
+            'user_id' => auth()->id(),
         ]);
 
         return [

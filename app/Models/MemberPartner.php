@@ -18,5 +18,6 @@ class MemberPartner extends Model
     protected $fillable = [
         'partner_id',
         'user_id',
+        'role'
     ];
 }

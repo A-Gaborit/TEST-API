@@ -18,16 +18,6 @@ class PartnerRepository implements PartnerRepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function create(array $data): PartnerEntity
-    {
-        $partnerModel = $this->model->create($data);
-
-        return $this->mapModelToEntity($partnerModel);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function findById(string $id): PartnerEntity
     {
         $partnerModel = $this->model->findOrFail($id); 
@@ -38,21 +28,11 @@ class PartnerRepository implements PartnerRepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function update(string $id, array $data): bool
+    public function create(array $data): PartnerEntity
     {
-        $partnerModel = $this->model->findOrFail($id);
+        $partnerModel = $this->model->create($data);
 
-        return $partnerModel->update($data);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function delete(string $id): bool
-    {
-        $partnerModel = $this->model->findOrFail($id);
-
-        return $partnerModel->delete();
+        return $this->mapModelToEntity($partnerModel);
     }
 
     protected function mapModelToEntity(PartnerModel $model): PartnerEntity

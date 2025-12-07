@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('partner_id')->constrained('partners')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->enum('role', ['owner', 'manager', 'reader'])->default('reader');
+            $table->unique(['partner_id', 'user_id']);
             $table->timestamps();
         });
     }
