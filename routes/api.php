@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\PartnerController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('partners', [PartnerController::class, 'index']);
+Route::get('hello', function () {
+    return response()->json(['message' => 'Hello world']);
+});
 
 Route::middleware('auth:api')->group(function () {
     // Routes for all users connected
