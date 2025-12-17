@@ -29,7 +29,7 @@ L’API a pour but de fournir les services nécessaires au MVP de Lootopia :
 | Framework | Laravel 12 |
 | Langage | PHP 8.4 |
 | Base de données | MySQL 8.4 |
-| Authentification | JWT|
+| Authentification | JWT, bcrypt|
 | Documentation API | Swagger |
 | Tests | PestPHP |
 | Sécurité | Bcrypt, validations, CORS |
@@ -65,12 +65,18 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 4️⃣ Lancer les migrations et seeders
+### 4️⃣ Générer le secret JWT
+```bash
+php artisan jwt:secret
+```
+Permet de générer un secret aléatoire pour l'authentification JWT.
+
+### 5️⃣ Lancer les migrations et seeders
 ```bash
 php artisan migrate --seed
 ```
 
-### 5️⃣ Lancer le serveur
+### 6️⃣ Lancer le serveur
 ```bash
 php artisan serve
 ```
@@ -84,14 +90,21 @@ php artisan serve
 ```
 Lootopia-API/
 ├── app/
-│   ├── Http/Controllers/       # Contrôleurs API
-│   ├── Models/                 # Modèles Eloquent
-│   └── Http/Middleware/        # Middleware (JWT, auth, etc.)
+│   ├── Contracts/              # Définis les interfaces
+│   ├── Exceptions/             # Gère les erreurs personnalisées
+│   ├── Http/Controllers/       # Traite les requêtes HTTP + renvoie les réponses
+│   ├── Http/Middleware/        # Filtre et protège les requêtes (JWT, auth, etc.)
+│   ├── Http/Requests/          # Validations données entrantes
+│   ├── Http/Resources/         # Formatte les données sortantes
+│   ├── Models/                 # Représente les données
+│   ├── Repositories/           # Gère les interactions avec la BDD
+│   └── Services/               # Contient la logique métier
 ├── database/
+│   ├── factories/              # Fabrications données
 │   ├── migrations/             # Structure BDD
 │   └── seeders/                # Données initiales
 ├── routes/
-│   └── api.php                 # Routes API REST
+│   └── api.php                 # Définit les endpoints
 └── tests/                      # Tests unitaires et fonctionnels
 ```
 
