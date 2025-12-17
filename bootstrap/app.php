@@ -18,9 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // $exceptions->renderable(function (Throwable $e, $request) {
-        //     if ($request->expectsJson() || $request->is('api/*')) {
-        //         return app(Handler::class)->render($request, $e);
-        //     }
-        // });
+        $exceptions->renderable(function (Throwable $e, $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return app(Handler::class)->render($request, $e);
+            }
+        });
     })->create();
